@@ -2,6 +2,8 @@ namespace SaunaApi.Models
 {
     public class User
     {
+        internal object _context;
+
         public int Id { get; set;} 
         public string Username { get; set;}
         public string Email { get; set;}
