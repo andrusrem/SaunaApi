@@ -24,10 +24,10 @@ namespace SaunaApi.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<User>>> GetUsers()
         {
-          if (_context.Users == null)
-          {
-              return NotFound();
-          }
+            if (_context.Users == null)
+            {
+                return NotFound();
+            }
             return await _context.Users.ToListAsync();
         }
 
@@ -35,10 +35,10 @@ namespace SaunaApi.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<User>> GetUser(int id)
         {
-          if (_context.Users == null)
-          {
-              return NotFound();
-          }
+            if (_context.Users == null)
+            {
+                return NotFound();
+            }
             var user = await _context.Users.FindAsync(id);
 
             if (user == null)
@@ -83,12 +83,21 @@ namespace SaunaApi.Controllers
         // POST: api/User
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<User>> PostUser(User user)
+        public async Task<ActionResult<User>> PostUser(RegisterUser registerUser)
         {
-          if (_context.Users == null)
-          {
-              return Problem("Entity set 'SaunaApiDbContext.Users'  is null.");
-          }
+            if (_context.Users == null)
+            {
+                return Problem("Entity set 'SaunaApiDbContext.Users'  is null.");
+            }
+
+            var user = new User();
+            user.Username = registerUser.Username;
+            user.Email = registerUser.Email;
+            user.Firstname = registerUser.Firstname;
+            user.Lastname = registerUser.Lastname;
+            user.Password = registerUser.Password;
+            user.Access_token = GenerateToken();
+            user.Created_at = DateTime.Now;
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
 
@@ -118,6 +127,14 @@ namespace SaunaApi.Controllers
         private bool UserExists(int id)
         {
             return (_context.Users?.Any(e => e.Id == id)).GetValueOrDefault();
+        }
+
+        public string GenerateToken()
+        {
+            byte[] time = BitConverter.GetBytes(DateTime.UtcNow.ToBinary());
+            byte[] key = Guid.NewGuid().ToByteArray();
+            string token = Convert.ToBase64String(time.Concat(key).ToArray());
+            return token;
         }
     }
 }
