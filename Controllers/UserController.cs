@@ -2,9 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using NuGet.Protocol;
 using SaunaApi.Models;
 
 namespace SaunaApi.Controllers
@@ -52,15 +54,29 @@ namespace SaunaApi.Controllers
         // PUT: api/User/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutUser(int id, User user)
+        public async Task<ActionResult<User>> PutUser(int id, UpdateUser updateUser)
         {
+            var user = await _context.Users.FindAsync(id);
             if (id != user.Id)
             {
                 return BadRequest();
             }
+            if(updateUser.Email != null)
+            {
+                user.Email = updateUser.Email;
+            }
+            if(updateUser.Password != null)
+            {
+                user.Password = updateUser.Password;
+            }
 
             _context.Entry(user).State = EntityState.Modified;
-
+            var response = new ResponseUser();
+            response.Username = user.Username;
+            response.Email = user.Email;
+            response.Firstname = user.Firstname;
+            response.Lastname = user.Lastname;
+            response.Password = user.Password;
             try
             {
                 await _context.SaveChangesAsync();
@@ -77,7 +93,7 @@ namespace SaunaApi.Controllers
                 }
             }
 
-            return NoContent();
+            return Content(response.ToJson());
         }
 
         // POST: api/User
@@ -103,6 +119,25 @@ namespace SaunaApi.Controllers
 
             return CreatedAtAction("GetUser", new { id = user.Id }, user);
         }
+        // POST: api/User/get-token
+        [HttpPost("{get-token}")]
+        public async Task<ActionResult<User>> PostUser(Login login)
+        {
+            var response = new ResponseUser();
+            if (_context.Users == null)
+            {
+                return Problem("Entity set 'SaunaApiDbContext.Users'  is null.");
+            }
+
+            var user = _context.Users.Where(user => user.Username == login.Username).FirstOrDefault();
+            if(user == null || user.Password != login.Password)
+            {
+                return Problem("Username or Password is invalid, please try again.");
+            }
+            response.Access_token = user.Access_token;
+            return Content(response.ToJson());
+        }
+
 
         // DELETE: api/User/5
         [HttpDelete("{id}")]

@@ -12092,19 +12092,19 @@
     ]
   },
   "packageFolders": {
-    "/Users/andrusremets/.nuget/packages/": {}
+    "C:\\Users\\andru\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/andrusremets/Desktop/OOP/SaunaApi/SaunaApi.csproj",
+      "projectUniqueName": "C:\\Users\\andru\\SaunaAPi\\SaunaApi.csproj",
       "projectName": "SaunaApi",
-      "projectPath": "/Users/andrusremets/Desktop/OOP/SaunaApi/SaunaApi.csproj",
-      "packagesPath": "/Users/andrusremets/.nuget/packages/",
-      "outputPath": "/Users/andrusremets/Desktop/OOP/SaunaApi/obj/",
+      "projectPath": "C:\\Users\\andru\\SaunaAPi\\SaunaApi.csproj",
+      "packagesPath": "C:\\Users\\andru\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\andru\\SaunaAPi\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "/Users/andrusremets/.nuget/NuGet/NuGet.Config"
+        "C:\\Users\\andru\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net7.0"
@@ -12188,7 +12188,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/7.0.401/RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.407\\RuntimeIdentifierGraph.json"
       }
     }
   }

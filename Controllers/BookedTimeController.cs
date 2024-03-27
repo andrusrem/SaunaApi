@@ -83,16 +83,30 @@ namespace SaunaApi.Controllers
         // POST: api/BookedTime
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<BookedTime>> PostBookedTime(BookedTime bookedTime)
+        public async Task<ActionResult<BookedTime>> PostBookedTime(BookedTimePost bookedTimePost)
         {
-          if (_context.BookedTimes == null)
-          {
-              return Problem("Entity set 'SaunaApiDbContext.BookedTimes'  is null.");
-          }
-            _context.BookedTimes.Add(bookedTime);
-            await _context.SaveChangesAsync();
+            var bookedTime = new BookedTime();
+            if (_context.BookedTimes == null)
+            {
+                return Problem("Entity set 'SaunaApiDbContext.BookedTimes'  is null.");
+            }
+            var user = await _context.Users.FindAsync(bookedTimePost.User_id);
+            var checkTime = _context.BookedTimes.Where(time => time.Booked_time == bookedTimePost.Booked_time).FirstOrDefault();
+            if(user != null && checkTime == null)
+            {
+                bookedTime.User_id = bookedTimePost.User_id;
+                bookedTime.user = user;
+                bookedTime.Booked_time = bookedTimePost.Booked_time;
+                _context.BookedTimes.Add(bookedTime);
+                await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetBookedTime", new { id = bookedTime.Id }, bookedTime);
+                return CreatedAtAction("GetBookedTime", new { id = bookedTime.Id }, bookedTime);
+            }
+            else if(user == null)
+            {
+                return Problem("Not registered user, login or register first.");
+            }
+            return Problem("This time is already booked");
         }
 
         // DELETE: api/BookedTime/5
