@@ -52,15 +52,21 @@ namespace SaunaApi.Controllers
         // PUT: api/BookedTime/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutBookedTime(int id, BookedTime bookedTime)
+        public async Task<ActionResult<BookedTime>> PutBookedTime(int id, BookedTimePut bookedTimePut, string access_token)
         {
+            var bookedTime = await _context.BookedTimes.FindAsync(id);
+            var user = _context.Users.Where(user => user.Access_token == access_token).FirstOrDefault();
+            if(bookedTime.User_id != user.Id)
+            {
+                return BadRequest();
+            }
             if (id != bookedTime.Id)
             {
                 return BadRequest();
             }
-
+            
             _context.Entry(bookedTime).State = EntityState.Modified;
-
+            bookedTime.Booked_time = bookedTimePut.Booked_time;
             try
             {
                 await _context.SaveChangesAsync();
@@ -111,18 +117,27 @@ namespace SaunaApi.Controllers
 
         // DELETE: api/BookedTime/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteBookedTime(int id)
+        public async Task<ActionResult<BookedTime>> DeleteBookedTime(BookedTimeDelete bookedTimeDelete)
         {
             if (_context.BookedTimes == null)
             {
                 return NotFound();
             }
-            var bookedTime = await _context.BookedTimes.FindAsync(id);
+            var user = _context.Users.Where(user => user.Access_token == bookedTimeDelete.Access_token).FirstOrDefault();
+            var bookedTime = await _context.BookedTimes.FindAsync(bookedTimeDelete.Id);
+            if(user == null)
+            {
+                return Problem("No such user.");
+            }
+            
             if (bookedTime == null)
             {
-                return NotFound();
+                return Problem("No such time.");
             }
-
+            if(user.Id != bookedTime.User_id)
+            {
+                return Problem("No such time related with this user.");
+            }
             _context.BookedTimes.Remove(bookedTime);
             await _context.SaveChangesAsync();
 

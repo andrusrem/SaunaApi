@@ -20,12 +20,16 @@ rad.json
 *.flf
 #Test results file
 TestResults.xml
-
-obj
-
-bin/Debug/net7.0
-
-.mono
-
-Migrations
+#obj folder
+obj/
+#
+obj/Debug/net7.0/
+#
+bin/
+#
+bin/Debug/net7.0/
+#
+.mono/
+#
+Migrations/
 
