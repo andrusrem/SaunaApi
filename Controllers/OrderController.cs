@@ -52,15 +52,18 @@ namespace SaunaApi.Controllers
         // PUT: api/Order/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutOrder(int id, Order order)
+        public async Task<IActionResult> PutOrder(int id, OrderPut orderPut)
         {
+            var order = await _context.Orders.FindAsync(id);
             if (id != order.Id)
             {
                 return BadRequest();
             }
-
+            order.User_id = orderPut.User_id;
+            order.ListTime = orderPut.ListTime;
+            order.Is_it_payd = orderPut.Is_it_payd;
             _context.Entry(order).State = EntityState.Modified;
-
+            
             try
             {
                 await _context.SaveChangesAsync();
