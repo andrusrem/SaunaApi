@@ -15,7 +15,7 @@ namespace SaunaApi.Migrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "7.0.7");
+            modelBuilder.HasAnnotation("ProductVersion", "7.0.12");
 
             modelBuilder.Entity("SaunaApi.Models.BookedTime", b =>
                 {
@@ -26,15 +26,15 @@ namespace SaunaApi.Migrations
                     b.Property<DateTime>("Booked_time")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("User_id")
+                    b.Property<int?>("OrderId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("userId")
+                    b.Property<int>("User_id")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("userId");
+                    b.HasIndex("OrderId");
 
                     b.ToTable("BookedTimes");
                 });
@@ -43,12 +43,6 @@ namespace SaunaApi.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("Booked_timeId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("Booked_time_id")
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("Created_at")
@@ -60,17 +54,10 @@ namespace SaunaApi.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<int>("User_id")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("Booked_timeId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Orders");
                 });
@@ -115,32 +102,14 @@ namespace SaunaApi.Migrations
 
             modelBuilder.Entity("SaunaApi.Models.BookedTime", b =>
                 {
-                    b.HasOne("SaunaApi.Models.User", "user")
-                        .WithMany()
-                        .HasForeignKey("userId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("user");
+                    b.HasOne("SaunaApi.Models.Order", null)
+                        .WithMany("ListTime")
+                        .HasForeignKey("OrderId");
                 });
 
             modelBuilder.Entity("SaunaApi.Models.Order", b =>
                 {
-                    b.HasOne("SaunaApi.Models.BookedTime", "Booked_time")
-                        .WithMany()
-                        .HasForeignKey("Booked_timeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("SaunaApi.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Booked_time");
-
-                    b.Navigation("User");
+                    b.Navigation("ListTime");
                 });
 #pragma warning restore 612, 618
         }

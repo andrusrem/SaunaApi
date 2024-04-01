@@ -101,7 +101,6 @@ namespace SaunaApi.Controllers
             if(user != null && checkTime == null)
             {
                 bookedTime.User_id = bookedTimePost.User_id;
-                bookedTime.user = user;
                 bookedTime.Booked_time = bookedTimePost.Booked_time;
                 _context.BookedTimes.Add(bookedTime);
                 await _context.SaveChangesAsync();

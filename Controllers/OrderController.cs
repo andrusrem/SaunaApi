@@ -83,12 +83,18 @@ namespace SaunaApi.Controllers
         // POST: api/Order
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Order>> PostOrder(Order order)
+        public async Task<ActionResult<Order>> PostOrder(OrderPost orderPost)
         {
-          if (_context.Orders == null)
-          {
-              return Problem("Entity set 'SaunaApiDbContext.Orders'  is null.");
-          }
+            var order = new Order();
+            decimal price = 20;
+            if (_context.Orders == null)
+            {
+                return Problem("Entity set 'SaunaApiDbContext.Orders'  is null.");
+            }
+            order.User_id = orderPost.User_id;
+            order.ListTime = orderPost.ListTime;
+            order.Price = order.ListTime.Count() * price;
+            order.Is_it_payd = orderPost.Is_it_payd;
             _context.Orders.Add(order);
             await _context.SaveChangesAsync();
 
